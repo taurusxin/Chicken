@@ -1,18 +1,149 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <a-skeleton
+        active
+        :loading="loading">
+      <div class="term-chicken-list">飞哥这学期吃了
+        <span class="chickens" v-for="(index,key) in data.term">
+          🐥
+        </span>
+        这么多鸡，一共吃了 <span class="high-light">{{ data.term }}</span> 次
+      </div>
+
+      <div class="most-chicken">
+        飞哥这学期吃鸡最多的一天是
+        <span class="high-light">
+          {{ data.most_date }}
+        </span>，这一天他吃了
+        <span class="high-light">{{ data.most_count }}</span> 次鸡
+      </div>
+
+      <div class="today-chicken-list">
+        <div v-if="data.today === 0">
+          飞哥今天还没有吃鸡，快去提醒他点一份
+        </div>
+        <div v-else>
+          飞哥今天吃了
+          <span class="chickens" v-for="(index,key) in data.today">
+          🐥
+        </span>
+          这么多鸡
+        </div>
+      </div>
+    </a-skeleton>
+
+    <a-divider />
+
+      <div class="time-range">
+        <a-radio-group
+            class="time-group"
+            name="timeGroup"
+            v-model="time"
+            button-style="solid">
+          <a-radio-button value="早上">
+            早上
+          </a-radio-button>
+          <a-radio-button value="中午">
+            中午
+          </a-radio-button>
+          <a-radio-button value="下午">
+            下午
+          </a-radio-button>
+          <a-radio-button value="晚上">
+            晚上
+          </a-radio-button>
+          <a-radio-button value="夜宵">
+            夜宵
+          </a-radio-button>
+        </a-radio-group>
+
+        <a-button
+            class="add-chicken"
+            type="primary"
+            size="large"
+            @click="handleAddChicken">
+          🐥飞哥吃鸡了！
+        </a-button>
+      </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+  },
+  data() {
+    return {
+      data: {
+        today: 1,
+        term: 1,
+        most_date: '',
+        most_count: 1
+      },
+      time: '中午',
+      loading: true
+    }
+  },
+  methods: {
+    handleAddChicken() {
+      const that = this
+      this.$modal.confirm({
+        title: '确认',
+        content: '飞哥今天' + this.time + '确定吃了一顿鸡吗？',
+        okText: '是的',
+        cancelText: '没有',
+        onOk() {
+          that.$axios.get('https://blog.rhyland.top/chicken/query.php?type=add&time=' + that.time)
+              .then(function (response) {
+                console.log(response.data)
+                that.$message.success(
+                    '飞哥吃鸡了！',
+                    3,
+                )
+                that.refreshData()
+              }).catch(function (error){})
+        },
+        onCancel() {},
+      });
+    },
+    refreshData() {
+      const that = this
+      this.$axios.get('https://blog.rhyland.top/chicken/query.php?type=all')
+          .then(function (response) {
+            that.loading = true
+            that.data.today = parseInt(response.data.today)
+            that.data.term = parseInt(response.data.term)
+            that.data.most_count = response.data.most_count
+            that.data.most_date = response.data.most_date
+            that.loading = false
+          }).catch(function (error){})
+    }
+  },
+  mounted() {
+    this.refreshData()
   }
 }
 </script>
+
+<style lang="less">
+
+.today-chicken-list, .term-chicken-list, .most-chicken {
+  font-size: 25px;
+  margin: 25px;
+}
+
+.add-chicken {
+  margin: 10px 30px;
+  width: 200px;
+}
+
+.time-group {
+  margin: 20px 25px;
+}
+
+.high-light {
+  color: deeppink;
+}
+</style>
