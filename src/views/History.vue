@@ -7,7 +7,7 @@
         :data-source="data"
         :loading="loading">
       <span slot="num" slot-scope="text, record, index">
-        {{ parseInt(index)+1 }}
+        {{ data.length - parseInt(index) }}
       </span>
       <template slot="operation" slot-scope="text, record">
         <a-popconfirm
