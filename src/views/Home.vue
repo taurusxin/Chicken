@@ -20,7 +20,7 @@
 
       <div class="today-chicken-list">
         <div v-if="data.today === 0">
-          飞哥今天还没有吃鸡，快去提醒他点一份
+          飞哥今天还没有吃鸡，快去<a-button @click="notify()">提醒他</a-button>点一份
         </div>
         <div v-else>
           飞哥今天吃了
@@ -119,6 +119,17 @@ export default {
             that.data.most_date = response.data.most_date
             that.loading = false
           }).catch(function (error){})
+    },
+    notify() {
+      const that = this
+      this.$axios.get('http://47.100.0.217:8267/send').then(
+          function (response) {
+            that.$message.success(
+                '发送提醒成功！',
+                3,
+            )
+          }
+      )
     }
   },
   mounted() {
