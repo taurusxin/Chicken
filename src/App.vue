@@ -3,7 +3,8 @@
     <div id="nav">
       <div class="title">飞哥吃了多少鸡</div>
       <router-link to="/" class="link">首页</router-link> |
-      <router-link to="history" class="link">吃鸡历史</router-link>
+      <router-link to="history" class="link">吃鸡历史</router-link> |
+      <router-link to="notify" class="link">自由提醒</router-link>
       <router-view/>
     </div>
   </div>

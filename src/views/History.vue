@@ -56,7 +56,7 @@ export default {
   methods: {
     refreshData() {
       const that = this
-      this.$axios.get('https://blog.rhyland.top/chicken/query.php?type=list')
+      this.$axios.get('http://chicken.rhyland.top/query.php?type=list')
           .then(function (response) {
             that.loading = true
             that.data = response.data
@@ -65,7 +65,7 @@ export default {
     },
     onDelete(key) {
       const that = this
-      this.$axios.get('https://blog.rhyland.top/chicken/query.php?type=delete&id='+key)
+      this.$axios.get('http://chicken.rhyland.top/query.php?type=delete&id='+key)
           .then(function (response) {
             that.refreshData()
           }).catch(function (error){})
@@ -77,7 +77,7 @@ export default {
 }
 </script>
 
-<style type="less">
+<style type="less" scoped>
 .table {
   margin: 25px 25px;
 }

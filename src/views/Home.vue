@@ -40,17 +40,14 @@
             name="timeGroup"
             v-model="time"
             button-style="solid">
-          <a-radio-button value="早上">
-            早上
+          <a-radio-button value="中餐">
+            中餐
           </a-radio-button>
-          <a-radio-button value="中午">
-            中午
+          <a-radio-button value="下午茶">
+            下午茶
           </a-radio-button>
-          <a-radio-button value="下午">
-            下午
-          </a-radio-button>
-          <a-radio-button value="晚上">
-            晚上
+          <a-radio-button value="晚餐">
+            晚餐
           </a-radio-button>
           <a-radio-button value="夜宵">
             夜宵
@@ -82,7 +79,7 @@ export default {
         most_date: '',
         most_count: 1
       },
-      time: '中午',
+      time: '夜宵',
       loading: true
     }
   },
@@ -95,7 +92,7 @@ export default {
         okText: '是的',
         cancelText: '没有',
         onOk() {
-          that.$axios.get('https://blog.rhyland.top/chicken/query.php?type=add&time=' + that.time)
+          that.$axios.get('http://chicken.rhyland.top/query.php?type=add&time=' + that.time)
               .then(function (response) {
                 console.log(response.data)
                 that.$message.success(
@@ -110,7 +107,7 @@ export default {
     },
     refreshData() {
       const that = this
-      this.$axios.get('https://blog.rhyland.top/chicken/query.php?type=all')
+      this.$axios.get('http://chicken.rhyland.top/query.php?type=all')
           .then(function (response) {
             that.loading = true
             that.data.today = parseInt(response.data.today)
@@ -138,7 +135,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 
 .today-chicken-list, .term-chicken-list, .most-chicken {
   font-size: 25px;
