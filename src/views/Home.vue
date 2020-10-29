@@ -20,14 +20,14 @@
 
       <div class="today-chicken-list">
         <div v-if="data.today === 0">
-          飞哥今天还没有吃鸡，快去<a-button @click="notify()">提醒他</a-button>点一份
+          飞哥今天还没有吃鸡，快去<a-button @click="notify()" class="notify-btn">提醒他</a-button>点一份
         </div>
         <div v-else>
           飞哥今天吃了
           <span class="chickens" v-for="(index,key) in data.today">
           🐥
         </span>
-          这么多鸡
+          这么多鸡<a-button @click="notify()" class="notify-btn">提醒他</a-button>再点一份
         </div>
       </div>
     </a-skeleton>
@@ -153,5 +153,9 @@ export default {
 
 .high-light {
   color: deeppink;
+}
+
+.notify-btn {
+  margin: 15px;
 }
 </style>
