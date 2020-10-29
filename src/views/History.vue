@@ -3,6 +3,7 @@
     <a-table
         bordered
         class="table"
+        :pagination="false"
         :columns="columns"
         :data-source="data"
         :loading="loading">
