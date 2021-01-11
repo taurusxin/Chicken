@@ -1,36 +1,38 @@
 <template>
   <div class="home">
-    <a-skeleton
-        active
-        :loading="loading">
-      <div class="term-chicken-list">飞哥这学期吃了 <br/>
-        <span class="chickens" v-for="(index,key) in data.term">
+    <div class="container" :style="container">
+      <a-skeleton
+          active
+          :loading="loading">
+        <div class="term-chicken-list">飞哥这学期吃了 <br/>
+          <span class="chickens" v-for="(index,key) in data.term">
           🐥
         </span>
-        <br/>这么多鸡，一共吃了 <span class="high-light">{{ data.term }}</span> 次
-      </div>
+          <br/>这么多鸡，一共吃了 <span class="high-light">{{ data.term }}</span> 次
+        </div>
 
-      <div class="most-chicken">
-        飞哥这学期吃鸡最多的一天是
-        <span class="high-light">
+        <div class="most-chicken">
+          飞哥这学期吃鸡最多的一天是
+          <span class="high-light">
           {{ data.most_date }}
         </span>，这一天他吃了
-        <span class="high-light">{{ data.most_count }}</span> 次鸡
-      </div>
-
-      <div class="today-chicken-list">
-        <div v-if="data.today === 0">
-          飞哥今天还没有吃鸡，快去<a-button @click="notify()" class="notify-btn">提醒他</a-button>点一份
+          <span class="high-light">{{ data.most_count }}</span> 次鸡
         </div>
-        <div v-else>
-          飞哥今天吃了
-          <span class="chickens" v-for="(index,key) in data.today">
+
+        <div class="today-chicken-list">
+          <div v-if="data.today === 0">
+            飞哥今天还没有吃鸡，快去<a-button @click="notify()" class="notify-btn">提醒他</a-button>点一份
+          </div>
+          <div v-else>
+            飞哥今天吃了
+            <span class="chickens" v-for="(index,key) in data.today">
           🐥
         </span>
-          这么多鸡<a-button @click="notify()" class="notify-btn">提醒他</a-button>再点一份
+            这么多鸡<a-button @click="notify()" class="notify-btn">提醒他</a-button>再点一份
+          </div>
         </div>
-      </div>
-    </a-skeleton>
+      </a-skeleton>
+    </div>
 
     <a-divider />
       <div class="time-range">
@@ -89,7 +91,11 @@ export default {
         {name: '下午茶', value: 0},
         {name: '晚餐', value: 0},
         {name: '夜宵', value: 0},
-      ]
+      ],
+      container: {
+        width: '100%',
+        display: 'inline-block'
+      }
     }
   },
   methods: {
@@ -97,11 +103,11 @@ export default {
       const that = this
       this.$modal.confirm({
         title: '确认',
-        content: '飞哥今天' + this.time + '确定吃了一顿鸡吗？',
+        content: '飞哥今天' + this.time_range + '确定吃了一顿鸡吗？',
         okText: '是的',
         cancelText: '没有',
         onOk() {
-          that.$axios.get('http://chicken.rhyland.top/query.php?type=add&time=' + that.time)
+          that.$axios.get('http://chicken.rhyland.top/query.php?type=add&time=' + that.time_range)
               .then(function (response) {
                 console.log(response.data)
                 that.$message.success(
@@ -201,9 +207,17 @@ export default {
         }]
       })
 
+    },
+    adaptive() {
+      if (window.screen.width > 900){
+        this.container.width = '870px'
+      }else {
+        this.container.width = '100%'
+      }
     }
   },
   mounted() {
+    this.adaptive()
     this.refreshData()
 
     window.addEventListener('resize',()=>{
