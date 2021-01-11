@@ -24,6 +24,15 @@ import 'ant-design-vue/dist/antd.min.css'
 import axios from "axios";
 Vue.prototype.$axios = axios;
 
+// echarts
+import * as echarts from 'echarts'
+import 'echarts/theme/macarons2'
+Vue.prototype.$echarts = echarts
+
+// 标题插件
+import VueWechatTitle from 'vue-wechat-title'
+Vue.use(VueWechatTitle)
+
 
 Vue.config.productionTip = false
 

@@ -3,11 +3,11 @@
     <a-skeleton
         active
         :loading="loading">
-      <div class="term-chicken-list">飞哥这学期吃了
+      <div class="term-chicken-list">飞哥这学期吃了 <br/>
         <span class="chickens" v-for="(index,key) in data.term">
           🐥
         </span>
-        这么多鸡，一共吃了 <span class="high-light">{{ data.term }}</span> 次
+        <br/>这么多鸡，一共吃了 <span class="high-light">{{ data.term }}</span> 次
       </div>
 
       <div class="most-chicken">
@@ -33,12 +33,11 @@
     </a-skeleton>
 
     <a-divider />
-
       <div class="time-range">
         <a-radio-group
             class="time-group"
             name="timeGroup"
-            v-model="time"
+            v-model="time_range"
             button-style="solid">
           <a-radio-button value="中餐">
             中餐
@@ -62,6 +61,10 @@
           🐥飞哥吃鸡了！
         </a-button>
       </div>
+
+    <a-divider />
+    <h1>飞哥吃鸡统计</h1>
+    <div id="pie-chart"></div>
   </div>
 </template>
 
@@ -79,8 +82,14 @@ export default {
         most_date: '',
         most_count: 1
       },
-      time: '夜宵',
-      loading: true
+      time_range: '',
+      loading: true,
+      chicken_time: [
+        {name: '中餐', value: 0},
+        {name: '下午茶', value: 0},
+        {name: '晚餐', value: 0},
+        {name: '夜宵', value: 0},
+      ]
     }
   },
   methods: {
@@ -116,6 +125,38 @@ export default {
             that.data.most_date = response.data.most_date
             that.loading = false
           }).catch(function (error){})
+      this.$axios.get('http://chicken.rhyland.top/query.php?type=list')
+          .then(function (response) {
+            response.data.forEach((e) => {
+              switch (e.time){
+                case '中餐':
+                  that.chicken_time[0].value += 1
+                  break;
+                case '下午茶':
+                  that.chicken_time[1].value += 1
+                  break;
+                case '晚餐':
+                  that.chicken_time[2].value += 1
+                  break;
+                case '夜宵':
+                  that.chicken_time[3].value += 1
+                  break;
+              }
+            })
+            //拿完数据再绘图
+            that.drawCharts()
+          }).catch(function (error){})
+
+      let now = new Date().getHours();
+      if (0 <= now && now <= 13){
+        this.time_range = '中餐'
+      }else if (now <= 16){
+        this.time_range = '下午茶'
+      }else if (now <= 21){
+        this.time_range = '晚餐'
+      }else{
+        this.time_range = '夜宵'
+      }
     },
     notify() {
       const that = this
@@ -127,10 +168,47 @@ export default {
             )
           }
       )
+    },
+    drawCharts() {
+      let chart = this.$echarts.init(document.querySelector('#pie-chart'), 'macarons2')
+
+      chart.setOption({
+        title: {
+          text: '总数',
+          subtext: (this.chicken_time[0].value + this.chicken_time[1].value +
+              this.chicken_time[2].value + this.chicken_time[3].value).toString(),
+          x: 'center',
+          y: '45%'
+        },
+        legend: {
+          y: 'bottom',
+          orient:'horizontal',
+          data: ["中餐","下午茶","晚餐","夜宵"]
+        },
+        series: [{
+          name: '吃鸡数',
+          type: 'pie',
+          radius: ['40%', '60%'],
+          itemStyle:{
+            normal: {
+              label: {
+                show: true,
+                formatter: '{c}'
+              }
+            }
+          },
+          data: this.chicken_time
+        }]
+      })
+
     }
   },
   mounted() {
     this.refreshData()
+
+    window.addEventListener('resize',()=>{
+      this.$echarts.init(document.querySelector('#pie-chart')).resize()
+    })
   }
 }
 </script>
@@ -157,5 +235,10 @@ export default {
 
 .notify-btn {
   margin: 15px;
+}
+
+#pie-chart {
+  width: 100%;
+  height: 280px;
 }
 </style>

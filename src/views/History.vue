@@ -79,7 +79,20 @@ export default {
 </script>
 
 <style type="less" scoped>
-.table {
-  margin: 25px 25px;
+
+
+@media screen and (max-width: 500px){
+  .table {
+    display: inline-block;
+    margin-top: 25px;
+    width: 90%;
+  }
+}
+@media screen and (min-width: 500px){
+  .table {
+    width: 500px;
+    margin: 25px 25px;
+    display: inline-block;
+  }
 }
 </style>
