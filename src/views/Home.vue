@@ -131,6 +131,12 @@ export default {
             that.data.most_date = response.data.most_date
             that.loading = false
           }).catch(function (error){})
+
+      this.chicken_time[0].value = 0
+      this.chicken_time[1].value = 0
+      this.chicken_time[2].value = 0
+      this.chicken_time[3].value = 0
+
       this.$axios.get('http://chicken.rhyland.top/query.php?type=list')
           .then(function (response) {
             response.data.forEach((e) => {
